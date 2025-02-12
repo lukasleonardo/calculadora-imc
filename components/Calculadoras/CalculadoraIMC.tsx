@@ -5,7 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-label";
 import { useState } from "react";
-import Image from "next/image";
 import { Ruler, Weight } from "lucide-react";
 
 export default function CalculadoraIMC() {
@@ -48,14 +47,6 @@ export default function CalculadoraIMC() {
 
 
   return (
-    <div className="flex flex-col lg:flex-row items-center justify-center min-h-screen gap-8 p-4 bg-secondary">
-      <Image
-        src="./workout.svg"
-        alt="Imagem ilustrativa de saúde"
-        width={400}
-        height={400}
-        className="rounded-lg "
-      />
       <Card className="w-full max-w-md border-primary ">
         <CardHeader className="bg-primary text-primary-foreground rounded-t-lg">
           <CardTitle className="text-2xl font-bold text-center">Calculadora de IMC</CardTitle>
@@ -116,6 +107,5 @@ export default function CalculadoraIMC() {
           </div>
         </CardContent>
       </Card>
-    </div>
   );
 }
