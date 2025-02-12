@@ -2,9 +2,9 @@
 import { Label } from "@radix-ui/react-label";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Thermometer } from "lucide-react";
+import { ArrowLeftRight, Thermometer } from "lucide-react";
 import { Input } from "../ui/input";
-import { useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 
 export function CalculadoraTemperatura() {
     const [ temperatura, setTemperatura ] = useState('');
@@ -15,7 +15,7 @@ export function CalculadoraTemperatura() {
 
     const converterTemperatura = () => {
         const temp = Number.parseFloat(temperatura);
-        if(isNaN(temp)) return alert('Temperatura inválida');
+        if(isNaN(temp)) return;
 
         let res:number
 
@@ -36,8 +36,22 @@ export function CalculadoraTemperatura() {
         }
         setResultado(Number.parseFloat(res.toFixed(2)));  
     }  
-    
 
+    const inverterMedida = () =>{
+      const temp = de;
+      setDe(para);
+      setPara(temp);
+     }
+    
+     const firstRender = useRef(true);
+    
+          useEffect(() => {
+            if (firstRender.current) {
+              firstRender.current = false;
+              return;
+            }
+            converterTemperatura();
+          }, [temperatura, de, para]);
 
 
     return (
@@ -62,7 +76,7 @@ export function CalculadoraTemperatura() {
             />
           </div>
         </div>
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-end">
           <div className="w-2/5">
             <Label htmlFor="de" className="text-primary">
               De
@@ -78,7 +92,9 @@ export function CalculadoraTemperatura() {
               <option value="kelvin">Kelvin</option>
             </select>
           </div>
-          <Thermometer className="text-primary" />
+          <Button onClick={inverterMedida} className="bg-primary  hover:bg-primary/70">
+            <ArrowLeftRight className="text-secondary" />
+          </Button>
           <div className="w-2/5">
             <Label htmlFor="para" className="text-primary">
               Para

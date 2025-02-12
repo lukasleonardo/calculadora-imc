@@ -4,7 +4,7 @@ import Image from "next/image"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import CalculadoraIMC from "../components/Calculadoras/CalculadoraIMC"
 import { CalculadoraTemperatura } from "@/components/Calculadoras/CalculadoraTemperatura"
-import{CalculadoraMedidas} from "@/components/Calculadoras/CalculadoraMedidas"
+import { CalculadoraMedidasDist } from "@/components/Calculadoras/CalculadoraMedidasDist"
 
 
 export default function Home() {
@@ -17,8 +17,8 @@ export default function Home() {
         return <CalculadoraIMC/>
       case 'temperatura':
         return <CalculadoraTemperatura/>
-      case 'medidas':
-        return <CalculadoraMedidas/>
+      case 'distance':
+        return <CalculadoraMedidasDist/>
       default:
         return <CalculadoraIMC/>
     }
@@ -33,8 +33,8 @@ export default function Home() {
       case "temperatura":
         setImage("./temp.svg");
         break;
-      case "medidas":
-        setImage("./speed.svg");
+      case "distance":
+        setImage("./distance.svg");
         break;
       default:
         setImage("./workout.svg");
@@ -57,7 +57,7 @@ export default function Home() {
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="imc">Calculadora de IMC</SelectItem>
-          <SelectItem value="medidas">Conversor de Medidas</SelectItem>
+          <SelectItem value="distance">Conversor de Medidas</SelectItem>
           <SelectItem value="temperatura">Conversor de Temperatura</SelectItem>
         </SelectContent>
       </Select>
