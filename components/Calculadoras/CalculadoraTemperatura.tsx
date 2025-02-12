@@ -55,7 +55,7 @@ export function CalculadoraTemperatura() {
 
 
     return (
-        <Card className="w-full max-w-md border-primary">
+      <Card className="w-full max-w-md border-primary">
       <CardHeader className="bg-primary text-primary-foreground rounded-t-lg">
         <CardTitle className="text-2xl font-bold text-center">Conversor de Temperatura</CardTitle>
       </CardHeader>

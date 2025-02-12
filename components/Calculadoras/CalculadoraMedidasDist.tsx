@@ -2,7 +2,7 @@
 import { Label } from "@/components/ui/label"
 import { Button } from "../ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
-import { ArrowLeftRight } from "lucide-react"
+import { ArrowLeftRight, Ruler } from "lucide-react"
 import { Input } from "../ui/input"
 import { useEffect, useRef, useState } from "react"
 
@@ -81,14 +81,17 @@ export function CalculadoraMedidasDist(){
             <Label htmlFor="valor" className="text-primary">
               Valor
             </Label>
-            <Input
-              id="valor"
-              type="number"
-              value={valor}
-              onChange={(e) => setValor(e.target.value)}
-              className="border-primary"
-              placeholder="Digite o valor"
-            />
+            <div className="relative">
+              <Ruler className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary"/>
+              <Input
+                id="valor"
+                type="number"
+                value={valor}
+                onChange={(e) => setValor(e.target.value)}
+                className="pl-10 border-primary"
+                placeholder="Digite o valor"
+              />
+            </div>
           </div>
           <div className="flex justify-between items-end">
             <div className="w-2/5">
