@@ -1,6 +1,8 @@
 import { ArrowLeftRight, CircleDollarSign } from "lucide-react";
 import { use, useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import {TaxasDeCambio} from '../../lib/TaxasDeCambio'
+import {Abrev} from '../../lib/Abrev'
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
@@ -9,30 +11,28 @@ export function CalculadoraMoeda() {
     const [currency, setCurrency] = useState('0.00');
     const [de, setDe] = useState('real');
     const [para, setPara] = useState('dolar');
-    const [tag, setTag] = useState('BRL');
+    const [tag, setTag] = useState(Abrev[para]);
     const [resultado, setResultado] = useState<number|null>(null);
 
+    // data das moedas 12/02/2025
     const converterMoeda = () => {
         const val = Number.parseFloat(currency);
-        if(isNaN(val)) return;
-        let res:number
-        if(de === 'real' && para === 'dolar'){ 
-            res = val * 5.76
-        }else if(de === 'dolar' && para === 'real'){ 
-            res = val / 5.76
-        }else if(de === 'real' && para === 'euro'){ 
-            res = val * 6.00
-        }else if(de === 'euro' && para === 'real'){ 
-            res = val / 6.00
-        }else if(de === 'real' && para === 'libra'){ 
-            res = val * 7.18
-        }else if(de === 'libra' && para === 'real'){ 
-            res = val / 7.18
-        }else{
-            res = val
+        if (isNaN(val) || val <= 0) {
+            setResultado(null);
+            return;
         }
-        setResultado(Number.parseFloat(res.toFixed(2)));
+        if(de === para) return setResultado(Number((val).toFixed(2)));
+
+        const chave = `${de}-${para}` as keyof typeof TaxasDeCambio;
+        const taxa = TaxasDeCambio[chave];  // Chama a taxa do objeto TaxasDeCambio
+
+        if (taxa !== undefined) {
+            setResultado(Number((val * taxa).toFixed(2)));
+        } else {
+            setResultado(null);  // Caso não encontre uma taxa de câmbio válida
+        }
     }
+
     const inverterMedida = () => {
       const temp = de;
       setDe(para);
@@ -43,25 +43,7 @@ export function CalculadoraMoeda() {
          
 
     useEffect(() => {
-        switch (tag) {
-          case "real":
-            setTag("BRL");
-            break;
-          case "dolar":
-            setTag("USD");
-            break;
-          case "euro":
-            setTag("EUR");
-            break;
-          case "libra":
-            setTag("GBP");
-            break;
-        case "bitcoin":
-            setTag("BIT");
-            break;
-          default:
-            setTag("BRL");
-        }
+        setTag(Abrev[para]);
       }, [currency, de, para]);
 
     useEffect(() => {
@@ -70,7 +52,7 @@ export function CalculadoraMoeda() {
         return;
         }
     converterMoeda();
-    }, [para]);
+    }, [,currency,de,para]);
      
       
 
@@ -111,6 +93,10 @@ export function CalculadoraMoeda() {
                 <option value="dolar">Dolar</option>
                 <option value="euro">Euro</option>
                 <option value="libra">Libra</option>
+                <option value="bitcoin">Bitcoin</option>
+                <option value="won">Won</option>
+                <option value="iene">Iene</option>
+                <option value="yuan">Yuan</option>
               </select>
             </div>
             <Button onClick={inverterMedida} className="bg-primary  hover:bg-primary/70">
@@ -130,6 +116,10 @@ export function CalculadoraMoeda() {
                 <option value="dolar">Dolar</option>
                 <option value="euro">Euro</option>
                 <option value="libra">Libra</option>
+                <option value="bitcoin">Bitcoin</option>
+                <option value="won">Won</option>
+                <option value="iene">Iene</option>
+                <option value="yuan">Yuan</option>
               </select>
             </div>
           </div>
@@ -139,7 +129,7 @@ export function CalculadoraMoeda() {
           {resultado !== null && (
             <div className="mt-4 p-4 bg-accent rounded-md border border-primary">
               <p className="text-xl font-semibold text-primary">
-                Resultado:{para.charAt(0).toUpperCase()}$:{resultado}
+                Resultado:{resultado} {tag}
               </p>
             </div>
           )}
