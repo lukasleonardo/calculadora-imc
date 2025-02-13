@@ -4,7 +4,7 @@ import { Button } from "../ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { ArrowLeftRight, Ruler } from "lucide-react"
 import { Input } from "../ui/input"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import {UnidadesDeDistancia} from '../../lib/Units'
 
 export function CalculadoraMedidasDist(){
@@ -14,7 +14,7 @@ export function CalculadoraMedidasDist(){
     const [para, setPara] = useState('pe');
     const [resultado, setResultado] = useState<number|null>(null);
 
-    const converterMedida = () => {
+    const converterMedida = useCallback(() => {
             const val = Number.parseFloat(valor);
             if (isNaN(val)) {
                 setResultado(null);
@@ -31,7 +31,7 @@ export function CalculadoraMedidasDist(){
             } else {
                 setResultado(null);
             }
-        }
+        },[])
         
 
        const inverterMedida = () =>{

@@ -29,23 +29,6 @@ export default function Home() {
 
 
   useEffect(() => {
-    // switch (calculadora) {
-    //   case "imc":
-    //     setImage("./workout.svg");
-    //     break;
-    //   case "temperatura":
-    //     setImage("./temp.svg");
-    //     break;
-    //   case "distance":
-    //     setImage("./distance.svg");
-    //     break;
-    //   case "currency":
-    //     setImage("./money.svg");
-    //     break;
-    //   default:
-    //     setImage("./workout.svg");
-    // }
-
     const template = ImagensShortner[calculadora]
     setImage(template)
 
