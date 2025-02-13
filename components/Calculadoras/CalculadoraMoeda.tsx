@@ -1,5 +1,5 @@
 import { ArrowLeftRight, CircleDollarSign } from "lucide-react";
-import { use, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import {TaxasDeCambio} from '../../lib/TaxasDeCambio'
 import {Abrev} from '../../lib/Abrev'
@@ -31,7 +31,7 @@ export function CalculadoraMoeda() {
         } else {
             setResultado(null);  
         }
-    },[])
+    },[de, para, currency])
 
     const inverterMedida = () => {
       const temp = de;

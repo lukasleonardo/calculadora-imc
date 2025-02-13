@@ -31,7 +31,7 @@ export function CalculadoraMedidasDist(){
             } else {
                 setResultado(null);
             }
-        },[])
+        },[de, para, valor])
         
 
        const inverterMedida = () =>{

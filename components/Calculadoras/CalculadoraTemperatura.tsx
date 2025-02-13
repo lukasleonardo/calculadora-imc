@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { ArrowLeftRight, Thermometer } from "lucide-react";
 import { Input } from "../ui/input";
-import { use, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export function CalculadoraTemperatura() {
     const [ temperatura, setTemperatura ] = useState('');
@@ -35,7 +35,7 @@ export function CalculadoraTemperatura() {
             res = temp
         }
         setResultado(Number.parseFloat(res.toFixed(2)));  
-    },[])  
+    },[de, para, temperatura])  
 
     const inverterMedida = () =>{
       const temp = de;
