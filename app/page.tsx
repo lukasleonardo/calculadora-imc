@@ -6,7 +6,7 @@ import CalculadoraIMC from "../components/Calculadoras/CalculadoraIMC"
 import { CalculadoraTemperatura } from "@/components/Calculadoras/CalculadoraTemperatura"
 import { CalculadoraMedidasDist } from "@/components/Calculadoras/CalculadoraMedidasDist"
 import { CalculadoraMoeda } from "@/components/Calculadoras/CalculadoraMoeda"
-
+import { ImagensShortner } from "@/lib/Abrev"
 
 export default function Home() {
   const [calculadora, setCalculadora] = useState('imc');
@@ -29,22 +29,26 @@ export default function Home() {
 
 
   useEffect(() => {
-    switch (calculadora) {
-      case "imc":
-        setImage("./workout.svg");
-        break;
-      case "temperatura":
-        setImage("./temp.svg");
-        break;
-      case "distance":
-        setImage("./distance.svg");
-        break;
-      case "currency":
-        setImage("./money.svg");
-        break;
-      default:
-        setImage("./workout.svg");
-    }
+    // switch (calculadora) {
+    //   case "imc":
+    //     setImage("./workout.svg");
+    //     break;
+    //   case "temperatura":
+    //     setImage("./temp.svg");
+    //     break;
+    //   case "distance":
+    //     setImage("./distance.svg");
+    //     break;
+    //   case "currency":
+    //     setImage("./money.svg");
+    //     break;
+    //   default:
+    //     setImage("./workout.svg");
+    // }
+
+    const template = ImagensShortner[calculadora]
+    setImage(template)
+
   }, [calculadora]);
 
   return (

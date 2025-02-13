@@ -5,55 +5,33 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { ArrowLeftRight, Ruler } from "lucide-react"
 import { Input } from "../ui/input"
 import { useEffect, useRef, useState } from "react"
+import {UnidadesDeDistancia} from '../../lib/Units'
 
 export function CalculadoraMedidasDist(){
 
     const [valor, setValor] = useState('');
-    const [de, setDe] = useState('metros');
-    const [para, setPara] = useState('pés');
+    const [de, setDe] = useState('metro');
+    const [para, setPara] = useState('pe');
     const [resultado, setResultado] = useState<number|null>(null);
 
     const converterMedida = () => {
-        const val = Number.parseFloat(valor);
-        if(isNaN(val)) return;
-        let res:number
-        if(de === 'metros' && para === 'pés'){
-            res = val * 3.281
-        }else if(de === 'pés' && para === 'metros'){
-            res = val / 3.281
-        }else if(de === 'metros' && para === 'jardas'){
-            res = val * 1.094
-        }else if(de === 'jardas' && para === 'metros'){
-            res = val / 1.094
-        }else if(de === 'pés' && para === 'jardas'){
-            res = val / 3
-        }else if(de === 'jardas' && para === 'pés'){
-            res = val * 3
-        }else if(de === 'metros' && para === 'milhas'){
-            res = val / 1609
-        }else if(de === 'milhas' && para === 'metros'){
-            res = val * 1609
-        }else if(de === 'pés' && para === 'milhas'){
-            res = val / 5280
-        }else if(de === 'milhas' && para === 'pés'){
-            res = val * 5280
-        }else if(de === 'jardas' && para === 'milhas'){
-            res = val / 1760
-        }else if(de === 'milhas' && para === 'jardas'){
-            res = val * 1760
-        }else if(de=== 'metro' && para === 'km'){
-          res = val / 1000
-        }else if(de === 'km' && para === 'metros'){
-          res = val * 1000
-        }else if(de === 'milhas' && para === 'km'){
-          res = val * 1.609
-        }else if(de === 'km' && para === 'milhas'){
-          res = val / 1.609
-        }else{
-          res = val
+            const val = Number.parseFloat(valor);
+            if (isNaN(val)) {
+                setResultado(null);
+                return;
+            }
+            if(de === para) return setResultado(Number((val).toFixed(2)));
+    
+            const chave = `${de}-${para}` as keyof typeof UnidadesDeDistancia;
+            const taxa = UnidadesDeDistancia[chave];  
+
+
+            if (taxa !== undefined) {
+                setResultado(Number((val * taxa).toFixed(2)));
+            } else {
+                setResultado(null);
+            }
         }
-        setResultado(Number.parseFloat(res.toFixed(2)));
-      }
         
 
        const inverterMedida = () =>{
@@ -104,11 +82,15 @@ export function CalculadoraMedidasDist(){
                 onChange={(e) => setDe(e.target.value)}
                 className="w-full p-2 border border-primary rounded"
               >
-                <option value="metros">Metros</option>
-                <option value="pés">Pés</option>
-                <option value="jardas">Jardas</option>
-                <option value="milhas">Milhas</option>
+                <option value="metro">Metros</option>
+                <option value="pe">Pés</option>
+                <option value="jarda">Jardas</option>
+                <option value="milha">Milhas</option>
                 <option value="km">Kilometros</option>
+                <option value="cm">Centímetros</option>
+                <option value="mm">Milimetros</option>
+                <option value="polegada">Polegadas</option>
+                <option value="milha-marinha">Milhas Marinhas</option>
               </select>
             </div>
           <Button onClick={inverterMedida} className="bg-primary  hover:bg-primary/70">
@@ -124,11 +106,15 @@ export function CalculadoraMedidasDist(){
                 onChange={(e) => setPara(e.target.value)}
                 className="w-full p-2 border border-primary rounded"
               >
-                <option value="metros">Metros</option>
-                <option value="pés">Pés</option>
-                <option value="jardas">Jardas</option>
-                <option value="milhas">Milhas</option>
+                <option value="metro">Metros</option>
+                <option value="pe">Pés</option>
+                <option value="jarda">Jardas</option>
+                <option value="milha">Milhas</option>
                 <option value="km">Kilometros</option>
+                <option value="cm">Centímetros</option>
+                <option value="mm">Milimetros</option>
+                <option value="polegada">Polegadas</option>
+                <option value="milha-marinha">Milhas Marinhas</option>
               </select>
             </div>
           </div>
@@ -137,10 +123,10 @@ export function CalculadoraMedidasDist(){
           </Button>
           {resultado !== null && (
             <div className="mt-4 p-4 bg-accent rounded-md border border-primary">
-              <p className="text-xl font-semibold text-primary">
-                Resultado: {resultado} {para}
-              </p>
-            </div>
+            <p className="text-xl font-semibold text-primary"> 
+              Resultado: {resultado >= 1 ? resultado.toFixed(2) : resultado.toPrecision(3)} {para}
+            </p>
+          </div>
           )}
         </CardContent>
       </Card>)

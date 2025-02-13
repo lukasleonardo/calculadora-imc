@@ -24,12 +24,12 @@ export function CalculadoraMoeda() {
         if(de === para) return setResultado(Number((val).toFixed(2)));
 
         const chave = `${de}-${para}` as keyof typeof TaxasDeCambio;
-        const taxa = TaxasDeCambio[chave];  // Chama a taxa do objeto TaxasDeCambio
-
+        const taxa = TaxasDeCambio[chave]; 
+        
         if (taxa !== undefined) {
             setResultado(Number((val * taxa).toFixed(2)));
         } else {
-            setResultado(null);  // Caso não encontre uma taxa de câmbio válida
+            setResultado(null);  
         }
     }
 
