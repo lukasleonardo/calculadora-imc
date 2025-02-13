@@ -6,8 +6,18 @@ import CalculadoraIMC from "../components/Calculadoras/CalculadoraIMC"
 import { CalculadoraTemperatura } from "@/components/Calculadoras/CalculadoraTemperatura"
 import { CalculadoraMedidasDist } from "@/components/Calculadoras/CalculadoraMedidasDist"
 import { CalculadoraMoeda } from "@/components/Calculadoras/CalculadoraMoeda"
-import { ImagensShortner } from "@/lib/Abrev"
+import { CalculadoraVelocidade } from "@/components/Calculadoras/CalculadoraVelocidade"
+import { ImagensShortner } from "@/lib/utils"
+import SelectComBusca, { SelectOption } from "@/components/SeletorComBusca"
 
+
+const calculadoras: SelectOption[] = [
+  { value: "imc", label: "Calculadora de IMC" },
+  { value: "distance", label: "Conversor de Medidas" },
+  { value: "temperatura", label: "Conversor de Temperatura" },
+  { value: "currency", label: "Conversor de Moedas" },
+  { value: "velocidade", label: "Conversor de Velocidade" },
+]
 export default function Home() {
   const [calculadora, setCalculadora] = useState('imc');
   const [image, setImage] = useState('./workout.svg');
@@ -22,6 +32,8 @@ export default function Home() {
         return <CalculadoraMedidasDist/>
       case 'currency':
         return <CalculadoraMoeda/>
+      case 'velocidade':
+        return <CalculadoraVelocidade/>
       default:
         return <CalculadoraIMC/>
     }
@@ -44,17 +56,12 @@ export default function Home() {
       className="rounded-lg"
     />
     <div className="w-full max-w-md space-y-4">
-      <Select onValueChange={setCalculadora} defaultValue="imc">
-        <SelectTrigger className="w-full border-primary">
-          <SelectValue placeholder="Selecione uma calculadora" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="imc">Calculadora de IMC</SelectItem>
-          <SelectItem value="distance">Conversor de Medidas</SelectItem>
-          <SelectItem value="temperatura">Conversor de Temperatura</SelectItem>
-          <SelectItem value="currency">Conversor de Moeda</SelectItem>
-        </SelectContent>
-      </Select>
+    <SelectComBusca
+            options={calculadoras}
+            value={calculadora}
+            onChange={setCalculadora}
+            placeholder="Selecione uma calculadora"
+          />
       {renderCalculadora()}
     </div>
   </main>

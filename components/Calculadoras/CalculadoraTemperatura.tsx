@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { ArrowLeftRight, Thermometer } from "lucide-react";
 import { Input } from "../ui/input";
 import { useCallback, useEffect, useRef, useState } from "react";
+import SelectComBusca from "../SeletorComBusca";
+import { opcoesTemperatura } from "@/lib/options";
 
 export function CalculadoraTemperatura() {
     const [ temperatura, setTemperatura ] = useState('');
@@ -81,16 +83,8 @@ export function CalculadoraTemperatura() {
             <Label htmlFor="de" className="text-primary">
               De
             </Label>
-            <select
-              id="de"
-              value={de}
-              onChange={(e) => setDe(e.target.value)}
-              className="w-full p-2 border border-primary rounded"
-            >
-              <option value="celsius">Celsius</option>
-              <option value="fahrenheit">Fahrenheit</option>
-              <option value="kelvin">Kelvin</option>
-            </select>
+            <SelectComBusca options={opcoesTemperatura} value={de} 
+                        onChange={setDe} placeholder="Selecione a unidade" />
           </div>
           <Button onClick={inverterMedida} className="bg-primary  hover:bg-primary/70">
             <ArrowLeftRight className="text-secondary" />
@@ -99,16 +93,8 @@ export function CalculadoraTemperatura() {
             <Label htmlFor="para" className="text-primary">
               Para
             </Label>
-            <select
-              id="para"
-              value={para}
-              onChange={(e) => setPara(e.target.value)}
-              className="w-full p-2 border border-primary rounded"
-            >
-              <option value="fahrenheit">Fahrenheit</option>
-              <option value="celsius">Celsius</option>
-              <option value="kelvin">Kelvin</option>
-            </select>
+              <SelectComBusca options={opcoesTemperatura} value={para} 
+                        onChange={setPara} placeholder="Selecione a unidade" />                      
           </div>
         </div>
         <Button onClick={converterTemperatura} className="w-full bg-primary hover:bg-primary/90">

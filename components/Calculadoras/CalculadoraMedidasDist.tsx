@@ -6,6 +6,8 @@ import { ArrowLeftRight, Ruler } from "lucide-react"
 import { Input } from "../ui/input"
 import { useCallback, useEffect, useRef, useState } from "react"
 import {UnidadesDeDistancia} from '../../lib/Units'
+import { opcoesComprimento } from "@/lib/options"
+import SelectComBusca from "../SeletorComBusca"
 
 export function CalculadoraMedidasDist(){
 
@@ -76,22 +78,8 @@ export function CalculadoraMedidasDist(){
               <Label htmlFor="de" className="text-primary">
                 De
               </Label>
-              <select
-                id="de"
-                value={de}
-                onChange={(e) => setDe(e.target.value)}
-                className="w-full p-2 border border-primary rounded"
-              >
-                <option value="metro">Metros</option>
-                <option value="pe">Pés</option>
-                <option value="jarda">Jardas</option>
-                <option value="milha">Milhas</option>
-                <option value="km">Kilometros</option>
-                <option value="cm">Centímetros</option>
-                <option value="mm">Milimetros</option>
-                <option value="polegada">Polegadas</option>
-                <option value="milha-marinha">Milhas Marinhas</option>
-              </select>
+              <SelectComBusca options={opcoesComprimento} value={de} 
+                                    onChange={setDe} placeholder="Selecione a unidade" />
             </div>
           <Button onClick={inverterMedida} className="bg-primary  hover:bg-primary/70">
             <ArrowLeftRight className="text-secondary" />
@@ -100,22 +88,8 @@ export function CalculadoraMedidasDist(){
               <Label htmlFor="para" className="text-primary">
                 Para
               </Label>
-              <select
-                id="para"
-                value={para}
-                onChange={(e) => setPara(e.target.value)}
-                className="w-full p-2 border border-primary rounded"
-              >
-                <option value="metro">Metros</option>
-                <option value="pe">Pés</option>
-                <option value="jarda">Jardas</option>
-                <option value="milha">Milhas</option>
-                <option value="km">Kilometros</option>
-                <option value="cm">Centímetros</option>
-                <option value="mm">Milimetros</option>
-                <option value="polegada">Polegadas</option>
-                <option value="milha-marinha">Milhas Marinhas</option>
-              </select>
+              <SelectComBusca options={opcoesComprimento} value={para} 
+                                    onChange={setPara} placeholder="Selecione a unidade" />
             </div>
           </div>
           <Button onClick={converterMedida} className="w-full bg-primary hover:bg-primary/90">
