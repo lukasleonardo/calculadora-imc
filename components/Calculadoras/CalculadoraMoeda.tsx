@@ -5,65 +5,49 @@ import {TaxasDeCambio} from '../../lib/TaxasDeCambio'
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { buscarTaxaDeCambioAPI } from "@/api/exchangeRates";
+import SelectComBusca from "../SeletorComBusca";
+import { opcoesMoedas } from "@/lib/options";
+
+import { convertCurrency, getCurrencyData, updateCurrencyData } from "@/lib/currencyUtils"
 
 interface TaxasDeCambio {
   [key: string]: number; 
 }
 
-const obterDataRequisicao = () => {
-  const data = new Date();  // Cria um objeto Date com a data e hora atuais
 
-  const dia = String(data.getDate()).padStart(2, '0'); // Dia do mês (com 2 dígitos)
-  const mes = String(data.getMonth() + 1).padStart(2, '0'); // Mês (com 2 dígitos)
-  const ano = data.getFullYear(); // Ano com 4 dígitos
-  const hora = String(data.getHours()).padStart(2, '0'); // Hora com 2 dígitos
-  const minutos = String(data.getMinutes()).padStart(2, '0'); // Minutos com 2 dígitos
-
-  // Formata como "DD/MM/YYYY HH:mm"
-  return `${dia}/${mes}/${ano} ${hora}:${minutos}`;
-};
 
 
 export function CalculadoraMoeda() {
-    const [currency, setCurrency] = useState('0.00');
-    const [de, setDe] = useState('BRL');
+    const [currency, setCurrency] = useState('');
+    const [de, setDe] = useState('USD');
     const [para, setPara] = useState('USD');
     const [resultado, setResultado] = useState<number|null>(null);
-    const [cache, setCache] = useState<TaxasDeCambio>({});  // Cache das taxas de câmbio
-    const [cacheTimestamp, setCacheTimestamp] = useState<number | null>(null);
+    const [currencyOptions, setCurrencyOptions] = useState(getCurrencyData().currencies)
+
+    useEffect(() => {
+      const fetchData = async () => {
+        await updateCurrencyData()
+        setCurrencyOptions(getCurrencyData().currencies)
+      }
+      fetchData()
+    }, [])
 
     // data das moedas 12/02/2025
     const converterMoeda = useCallback(async () => {
         const val = Number.parseFloat(currency);
-        let lastRequestDate;
-        if (isNaN(val) || val <= 0) {
-            setResultado(null);
+        
+
+        if (isNaN(val) ) {
+            console.log('Valor inválido');
             return;
         }
         if(de === para) return setResultado(Number((val).toFixed(2)));
         const chave = `${de}-${para}`;
-        //const hora = 360000;
-        const dia = 86400000;
-        if(cache[chave] && cacheTimestamp && Date.now() - cacheTimestamp < dia) {
-          console.log("using cache" + lastRequestDate)
-            setResultado(Number((val * cache[chave]).toFixed(2)));
-            return
-        }
-      
+
 
         try{
-          const taxa = await buscarTaxaDeCambioAPI(de, para)
-          if(taxa !== undefined) {
-            lastRequestDate = obterDataRequisicao(); // salva data da ultima requisição
-            // Atualiza o cache com a nova taxa
-            setCache((prevCache) => ({ ...prevCache, [chave]: taxa }));
-            setCacheTimestamp(Date.now());  // Atualiza o timestamp do cache
-            setResultado(Number((val * taxa).toFixed(2)));
-            console.log("using api, cache atualizado"+ lastRequestDate)
-          }else{
-            throw new Error('Taxa não encontrada na API');
-          }
+          const resultadoConversao = convertCurrency(val, de, para);
+          setResultado(Number((resultadoConversao).toFixed(2)));
 
         }catch(e){          
           const taxaLocal = TaxasDeCambio[chave as keyof typeof TaxasDeCambio];
@@ -75,7 +59,7 @@ export function CalculadoraMoeda() {
             }
         }
 
-    },[de, para, currency, cache, cacheTimestamp, TaxasDeCambio, setResultado])
+    },[de, para, currency, TaxasDeCambio, setResultado])
 
     const inverterMedida = () => {
       const temp = de;
@@ -114,7 +98,7 @@ export function CalculadoraMoeda() {
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value)}
                 className="pl-10 border-primary"
-                placeholder="Digite a temperatura"
+                placeholder="Digite o valor"
               />
             </div>
           </div>
@@ -123,21 +107,8 @@ export function CalculadoraMoeda() {
               <Label htmlFor="de" className="text-primary">
                 De
               </Label>
-              <select
-                id="de"
-                value={de}
-                onChange={(e) => setDe(e.target.value)}
-                className="w-full p-2 border border-primary rounded"
-              >
-                <option value="BRL">Real</option>
-                <option value="USD">Dolar</option>
-                <option value="EUR">Euro</option>
-                <option value="GBP">Libra</option>
-                <option value="BTC">Bitcoin</option>
-                <option value="KRW">Won</option>
-                <option value="JPY">Iene</option>
-                <option value="CNY">Yuan</option>
-              </select>
+              <SelectComBusca options={currencyOptions||opcoesMoedas} value={de} 
+                                      onChange={setDe} placeholder="Selecione a unidade" /> 
             </div>
             <Button onClick={inverterMedida} className="bg-primary  hover:bg-primary/70">
               <ArrowLeftRight className="text-secondary" />
@@ -146,21 +117,8 @@ export function CalculadoraMoeda() {
               <Label htmlFor="para" className="text-primary">
                 Para
               </Label>
-              <select
-                id="para"
-                value={para}
-                onChange={(e) => setPara(e.target.value)}
-                className="w-full p-2 border border-primary rounded"
-              >
-                <option value="BRL">Real</option>
-                <option value="USD">Dolar</option>
-                <option value="EUR">Euro</option>
-                <option value="GBP">Libra</option>
-                <option value="BTC">Bitcoin</option>
-                <option value="KRW">Won</option>
-                <option value="JPY">Iene</option>
-                <option value="CNY">Yuan</option>
-              </select>
+              <SelectComBusca options={currencyOptions||opcoesMoedas} value={para} 
+                                      onChange={setPara} placeholder="Selecione a unidade" /> 
             </div>
           </div>
           <Button onClick={converterMoeda} className="w-full bg-primary hover:bg-primary/90">
