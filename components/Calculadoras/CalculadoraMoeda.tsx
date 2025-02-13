@@ -2,36 +2,80 @@ import { ArrowLeftRight, CircleDollarSign } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import {TaxasDeCambio} from '../../lib/TaxasDeCambio'
-import {Abrev} from '../../lib/Abrev'
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { buscarTaxaDeCambioAPI } from "@/api/exchangeRates";
+
+interface TaxasDeCambio {
+  [key: string]: number; 
+}
+
+const obterDataRequisicao = () => {
+  const data = new Date();  // Cria um objeto Date com a data e hora atuais
+
+  const dia = String(data.getDate()).padStart(2, '0'); // Dia do mês (com 2 dígitos)
+  const mes = String(data.getMonth() + 1).padStart(2, '0'); // Mês (com 2 dígitos)
+  const ano = data.getFullYear(); // Ano com 4 dígitos
+  const hora = String(data.getHours()).padStart(2, '0'); // Hora com 2 dígitos
+  const minutos = String(data.getMinutes()).padStart(2, '0'); // Minutos com 2 dígitos
+
+  // Formata como "DD/MM/YYYY HH:mm"
+  return `${dia}/${mes}/${ano} ${hora}:${minutos}`;
+};
+
 
 export function CalculadoraMoeda() {
     const [currency, setCurrency] = useState('0.00');
-    const [de, setDe] = useState('real');
-    const [para, setPara] = useState('dolar');
-    const [tag, setTag] = useState(Abrev[para]);
+    const [de, setDe] = useState('BRL');
+    const [para, setPara] = useState('USD');
     const [resultado, setResultado] = useState<number|null>(null);
+    const [cache, setCache] = useState<TaxasDeCambio>({});  // Cache das taxas de câmbio
+    const [cacheTimestamp, setCacheTimestamp] = useState<number | null>(null);
 
     // data das moedas 12/02/2025
-    const converterMoeda = useCallback(() => {
+    const converterMoeda = useCallback(async () => {
         const val = Number.parseFloat(currency);
+        let lastRequestDate;
         if (isNaN(val) || val <= 0) {
             setResultado(null);
             return;
         }
         if(de === para) return setResultado(Number((val).toFixed(2)));
-
-        const chave = `${de}-${para}` as keyof typeof TaxasDeCambio;
-        const taxa = TaxasDeCambio[chave]; 
-        
-        if (taxa !== undefined) {
-            setResultado(Number((val * taxa).toFixed(2)));
-        } else {
-            setResultado(null);  
+        const chave = `${de}-${para}`;
+        //const hora = 360000;
+        const dia = 86400000;
+        if(cache[chave] && cacheTimestamp && Date.now() - cacheTimestamp < dia) {
+          console.log("using cache" + lastRequestDate)
+            setResultado(Number((val * cache[chave]).toFixed(2)));
+            return
         }
-    },[de, para, currency])
+      
+
+        try{
+          const taxa = await buscarTaxaDeCambioAPI(de, para)
+          if(taxa !== undefined) {
+            lastRequestDate = obterDataRequisicao(); // salva data da ultima requisição
+            // Atualiza o cache com a nova taxa
+            setCache((prevCache) => ({ ...prevCache, [chave]: taxa }));
+            setCacheTimestamp(Date.now());  // Atualiza o timestamp do cache
+            setResultado(Number((val * taxa).toFixed(2)));
+            console.log("using api, cache atualizado"+ lastRequestDate)
+          }else{
+            throw new Error('Taxa não encontrada na API');
+          }
+
+        }catch(e){          
+          const taxaLocal = TaxasDeCambio[chave as keyof typeof TaxasDeCambio];
+          console.log("using local")
+            if (taxaLocal !== undefined) {
+              setResultado(Number((val * taxaLocal).toFixed(2)));
+            } else {
+                setResultado(null);
+            }
+        }
+
+    },[de, para, currency, cache, cacheTimestamp, TaxasDeCambio, setResultado])
 
     const inverterMedida = () => {
       const temp = de;
@@ -41,10 +85,6 @@ export function CalculadoraMoeda() {
 
     const firstRender = useRef(true);
          
-
-    useEffect(() => {
-        setTag(Abrev[para]);
-      }, [currency, de, para]);
 
     useEffect(() => {
         if (firstRender.current) {
@@ -89,14 +129,14 @@ export function CalculadoraMoeda() {
                 onChange={(e) => setDe(e.target.value)}
                 className="w-full p-2 border border-primary rounded"
               >
-                <option value="real">Real</option>
-                <option value="dolar">Dolar</option>
-                <option value="euro">Euro</option>
-                <option value="libra">Libra</option>
-                <option value="bitcoin">Bitcoin</option>
-                <option value="won">Won</option>
-                <option value="iene">Iene</option>
-                <option value="yuan">Yuan</option>
+                <option value="BRL">Real</option>
+                <option value="USD">Dolar</option>
+                <option value="EUR">Euro</option>
+                <option value="GBP">Libra</option>
+                <option value="BTC">Bitcoin</option>
+                <option value="KRW">Won</option>
+                <option value="JPY">Iene</option>
+                <option value="CNY">Yuan</option>
               </select>
             </div>
             <Button onClick={inverterMedida} className="bg-primary  hover:bg-primary/70">
@@ -112,14 +152,14 @@ export function CalculadoraMoeda() {
                 onChange={(e) => setPara(e.target.value)}
                 className="w-full p-2 border border-primary rounded"
               >
-                <option value="real">Real</option>
-                <option value="dolar">Dolar</option>
-                <option value="euro">Euro</option>
-                <option value="libra">Libra</option>
-                <option value="bitcoin">Bitcoin</option>
-                <option value="won">Won</option>
-                <option value="iene">Iene</option>
-                <option value="yuan">Yuan</option>
+                <option value="BRL">Real</option>
+                <option value="USD">Dolar</option>
+                <option value="EUR">Euro</option>
+                <option value="GBP">Libra</option>
+                <option value="BTC">Bitcoin</option>
+                <option value="KRW">Won</option>
+                <option value="JPY">Iene</option>
+                <option value="CNY">Yuan</option>
               </select>
             </div>
           </div>
@@ -129,7 +169,7 @@ export function CalculadoraMoeda() {
           {resultado !== null && (
             <div className="mt-4 p-4 bg-accent rounded-md border border-primary">
               <p className="text-xl font-semibold text-primary">
-                Resultado:{resultado} {tag}
+                Resultado:{resultado} {para}
               </p>
             </div>
           )}
