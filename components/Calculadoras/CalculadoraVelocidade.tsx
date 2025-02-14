@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
-import { use, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { UnidadesDeVelocidade } from "@/lib/Units";
 import SelectComBusca from "../SeletorComBusca";
 import { opcoesVelocidade } from "@/lib/options";

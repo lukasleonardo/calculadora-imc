@@ -17,7 +17,7 @@ let currencyData: CurrencyData = {
   lastUpdated: 0,
 }
 
-let requestDate;
+let requestDate: string;
 
 
 function obterDataRequisicao () {
@@ -57,6 +57,7 @@ function saveToCache() {
 
 export async function updateCurrencyData() {
   if (loadFromCache()) {
+    console.log(requestDate)
     console.log("Dados de moeda carregados do cache")
     return
   }
@@ -73,6 +74,7 @@ export async function updateCurrencyData() {
     const ratesResponse = await fetch(`https://openexchangerates.org/api/latest.json?app_id=${APP_ID}`)
     const ratesData = await ratesResponse.json()
     requestDate = obterDataRequisicao();
+    console.log(requestDate)
     // Buscar nomes das moedas
     const currenciesResponse = await fetch(`https://openexchangerates.org/api/currencies.json`)
     const currenciesData = await currenciesResponse.json()
@@ -97,6 +99,7 @@ export function getCurrencyData(): CurrencyData {
     loadFromCache()
   }
   requestDate = obterDataRequisicao();
+  console.log(requestDate)
   return currencyData
 }
 

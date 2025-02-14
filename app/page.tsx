@@ -1,7 +1,6 @@
 'use client'
 import { useEffect, useState } from "react"
 import Image from "next/image"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import CalculadoraIMC from "../components/Calculadoras/CalculadoraIMC"
 import { CalculadoraTemperatura } from "@/components/Calculadoras/CalculadoraTemperatura"
 import { CalculadoraMedidasDist } from "@/components/Calculadoras/CalculadoraMedidasDist"

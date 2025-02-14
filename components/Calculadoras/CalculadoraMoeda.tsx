@@ -51,7 +51,7 @@ export function CalculadoraMoeda() {
 
         }catch(e){          
           const taxaLocal = TaxasDeCambio[chave as keyof typeof TaxasDeCambio];
-          console.log("using local")
+          console.log("using local"+e)
             if (taxaLocal !== undefined) {
               setResultado(Number((val * taxaLocal).toFixed(2)));
             } else {
